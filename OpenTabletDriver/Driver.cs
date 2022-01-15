@@ -42,6 +42,11 @@ namespace OpenTabletDriver
 
             Log.Write("Detect", "Searching for tablets...");
 
+            // foreach (IDeviceEndpoint device in CompositeDeviceHub.GetDevices())
+            // {
+            //     Log.Debug("Detect", $"vendor id'{device.VendorID}' product id'{device.ProductID}' out size '{device.OutputReportLength}' in size '{device.InputReportLength}' feat size '{device.FeatureReportLength}'");
+            // }
+
             InputDevices.Clear();
             foreach (var config in _deviceConfigurationProvider.TabletConfigurations)
             {
@@ -150,6 +155,8 @@ namespace OpenTabletDriver
                    where device.CanOpen
                    where identifier.InputReportLength == null || identifier.InputReportLength == device.InputReportLength
                    where identifier.OutputReportLength == null || identifier.OutputReportLength == device.OutputReportLength
+                   // dirty hack for artist 13.3 breaks all other tablets
+                   where device.FeatureReportLength == 3
                    where DeviceMatchesStrings(device, identifier.DeviceStrings)
                    where DeviceMatchesAttribute(device, configuration.Attributes)
                    select device;
